@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POS Система - Каса и Инвентар</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>🛒 POS Система</h1>
+            <div class="header-actions">
+                <button id="inventoryBtn" class="btn btn-secondary">📦 Инвентар</button>
+                <button id="addProductBtn" class="btn btn-success">➕ Нов Продукт</button>
+            </div>
+        </header>
+
+        <!-- Main POS Interface -->
+        <div id="posView" class="main-view">
+            <div class="pos-container">
+                <!-- Product Search/Scan -->
+                <div class="search-section">
+                    <h2>Търсене на продукт</h2>
+                    <div class="search-box">
+                        <input
+                            type="text"
+                            id="barcodeInput"
+                            placeholder="Сканирайте баркод или въведете име на продукт..."
+                            autofocus
+                        >
+                        <button id="searchBtn" class="btn btn-primary">Търси</button>
+                    </div>
+                    <div id="searchResults" class="search-results"></div>
+                </div>
+
+                <!-- Shopping Cart -->
+                <div class="cart-section">
+                    <h2>Количка</h2>
+                    <div id="cartItems" class="cart-items"></div>
+                    <div class="cart-summary">
+                        <div class="total-line">
+                            <span>Общо артикули:</span>
+                            <span id="totalItems">0</span>
+                        </div>
+                        <div class="total-line total-price">
+                            <span>Обща сума:</span>
+                            <span id="totalPrice">0.00 лв</span>
+                        </div>
+                        <div class="cart-actions">
+                            <button id="clearCartBtn" class="btn btn-danger">Изчисти</button>
+                            <button id="checkoutBtn" class="btn btn-success btn-large">Плащане</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Inventory View -->
+        <div id="inventoryView" class="main-view" style="display: none;">
+            <div class="inventory-header">
+                <h2>📦 Управление на Инвентар</h2>
+                <button id="backToPosBtn" class="btn btn-secondary">← Назад към Каса</button>
+            </div>
+            <div class="inventory-controls">
+                <input
+                    type="text"
+                    id="inventorySearch"
+                    placeholder="Търсене в инвентара..."
+                    class="search-input"
+                >
+                <select id="stockFilter" class="filter-select">
+                    <option value="all">Всички продукти</option>
+                    <option value="low">Нисък запас (< 10)</option>
+                    <option value="out">Изчерпани</option>
+                </select>
+            </div>
+            <div id="inventoryList" class="inventory-list"></div>
+        </div>
+
+        <!-- Add Product Modal -->
+        <div id="addProductModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>➕ Добави Нов Продукт</h2>
+                    <span class="close">&times;</span>
+                </div>
+                <form id="addProductForm">
+                    <div class="form-group">
+                        <label for="productBarcode">Баркод:</label>
+                        <input type="text" id="productBarcode" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="productName">Име на продукт:</label>
+                        <input type="text" id="productName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="productPrice">Цена (лв):</label>
+                        <input type="number" id="productPrice" step="0.01" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="productStock">Наличност:</label>
+                        <input type="number" id="productStock" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="productCategory">Категория:</label>
+                        <input type="text" id="productCategory" placeholder="напр. Храни, Напитки, Козметика">
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary cancel-btn">Откажи</button>
+                        <button type="submit" class="btn btn-success">Запази Продукт</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Edit Product Modal -->
+        <div id="editProductModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>✏️ Редактирай Продукт</h2>
+                    <span class="close">&times;</span>
+                </div>
+                <form id="editProductForm">
+                    <input type="hidden" id="editProductId">
+                    <div class="form-group">
+                        <label for="editProductBarcode">Баркод:</label>
+                        <input type="text" id="editProductBarcode" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editProductName">Име на продукт:</label>
+                        <input type="text" id="editProductName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editProductPrice">Цена (лв):</label>
+                        <input type="number" id="editProductPrice" step="0.01" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editProductStock">Наличност:</label>
+                        <input type="number" id="editProductStock" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editProductCategory">Категория:</label>
+                        <input type="text" id="editProductCategory">
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary cancel-btn">Откажи</button>
+                        <button type="submit" class="btn btn-success">Запази Промени</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Checkout Modal -->
+        <div id="checkoutModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>💳 Плащане</h2>
+                    <span class="close">&times;</span>
+                </div>
+                <div class="checkout-summary">
+                    <h3>Обобщение на поръчката:</h3>
+                    <div id="checkoutItems"></div>
+                    <div class="checkout-total">
+                        <strong>Обща сума:</strong>
+                        <strong id="checkoutTotal">0.00 лв</strong>
+                    </div>
+                </div>
+                <div class="payment-methods">
+                    <h3>Метод на плащане:</h3>
+                    <div class="payment-buttons">
+                        <button class="btn btn-primary payment-btn" data-method="cash">💵 В брой</button>
+                        <button class="btn btn-primary payment-btn" data-method="card">💳 Карта</button>
+                    </div>
+                </div>
+                <div id="paymentResult" class="payment-result"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
