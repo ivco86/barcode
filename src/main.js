@@ -1,6 +1,6 @@
 /**
- * Main Application Entry Point - v3.0
- * ES6 Modular POS System with Advanced Features
+ * Main Application Entry Point - v4.0
+ * ES6 Modular POS System with Advanced AI Features
  */
 
 // Import Core Services
@@ -18,6 +18,18 @@ import { PromotionService } from './services/PromotionService.js';
 import { UnitService } from './services/UnitService.js';
 import { SupplierService } from './services/SupplierService.js';
 import { AuditService } from './services/AuditService.js';
+
+// Import Innovative Services (v4.0)
+import { ForecastService } from './services/ForecastService.js';
+import { ImageRecognitionService } from './services/ImageRecognitionService.js';
+import { ChatbotService } from './services/ChatbotService.js';
+import { GamificationService } from './services/GamificationService.js';
+import { MobileAppService } from './services/MobileAppService.js';
+import { VoiceService } from './services/VoiceService.js';
+import { MultiStoreService } from './services/MultiStoreService.js';
+import { DynamicPricingService } from './services/DynamicPricingService.js';
+import { AnalyticsService } from './services/AnalyticsService.js';
+import { BlockchainService } from './services/BlockchainService.js';
 
 // Import UI
 import { UIManager } from './ui/UIManager.js';
@@ -63,6 +75,56 @@ class POSApplication {
         this.services.unit = new UnitService();
         this.services.supplier = new SupplierService(this.services.product);
         this.services.audit = new AuditService(this.services.auth);
+
+        // Innovative services (v4.0)
+        this.services.forecast = new ForecastService(
+            this.services.sales,
+            this.services.product
+        );
+
+        this.services.imageRecognition = new ImageRecognitionService(this.services.product);
+
+        this.services.chatbot = new ChatbotService(
+            this.services.product,
+            this.services.sales,
+            this.services.customer
+        );
+
+        this.services.gamification = new GamificationService(
+            this.services.sales,
+            this.services.auth
+        );
+
+        this.services.mobileApp = new MobileAppService(
+            this.services.product,
+            this.services.cart,
+            this.services.sales
+        );
+
+        this.services.voice = new VoiceService(
+            this.services.product,
+            this.services.cart,
+            this.services.sales
+        );
+
+        this.services.multiStore = new MultiStoreService(
+            this.services.product,
+            this.services.sales,
+            this.services.auth
+        );
+
+        this.services.dynamicPricing = new DynamicPricingService(
+            this.services.product,
+            this.services.sales
+        );
+
+        this.services.analytics = new AnalyticsService(
+            this.services.sales,
+            this.services.customer,
+            this.services.product
+        );
+
+        this.services.blockchain = new BlockchainService(this.services.sales);
 
         // Initialize UI
         this.ui = null;
