@@ -475,9 +475,11 @@
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <!-- ES6 Modular Application -->
+    <script type="module" src="src/main.js"></script>
+
+    <!-- Service Worker for PWA -->
     <script>
-        // Register Service Worker for PWA
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js')
