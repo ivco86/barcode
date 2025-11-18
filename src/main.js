@@ -1,15 +1,23 @@
 /**
- * Main Application Entry Point - Simplified
- * ES6 Modular POS System
+ * Main Application Entry Point - v3.0
+ * ES6 Modular POS System with Advanced Features
  */
 
-// Import Services
+// Import Core Services
 import { StorageService } from './services/StorageService.js';
 import { AuthService } from './services/AuthService.js';
 import { ProductService } from './services/ProductService.js';
 import { CartService } from './services/CartService.js';
 import { CustomerService } from './services/CustomerService.js';
 import { SalesService } from './services/SalesService.js';
+
+// Import Advanced Services (v3.0)
+import { RefundService } from './services/RefundService.js';
+import { ShiftService } from './services/ShiftService.js';
+import { PromotionService } from './services/PromotionService.js';
+import { UnitService } from './services/UnitService.js';
+import { SupplierService } from './services/SupplierService.js';
+import { AuditService } from './services/AuditService.js';
 
 // Import UI
 import { UIManager } from './ui/UIManager.js';
@@ -22,7 +30,7 @@ class POSApplication {
         // Initialize storage
         StorageService.init();
 
-        // Initialize services
+        // Initialize core services
         this.services = {
             auth: new AuthService(),
             product: new ProductService(),
@@ -38,6 +46,23 @@ class POSApplication {
             this.services.customer,
             this.services.auth
         );
+
+        // Advanced services (v3.0)
+        this.services.refund = new RefundService(
+            this.services.product,
+            this.services.sales,
+            this.services.auth
+        );
+
+        this.services.shift = new ShiftService(
+            this.services.sales,
+            this.services.auth
+        );
+
+        this.services.promotion = new PromotionService(this.services.product);
+        this.services.unit = new UnitService();
+        this.services.supplier = new SupplierService(this.services.product);
+        this.services.audit = new AuditService(this.services.auth);
 
         // Initialize UI
         this.ui = null;

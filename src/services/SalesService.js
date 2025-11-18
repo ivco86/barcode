@@ -41,6 +41,42 @@ export class SalesService {
     }
 
     /**
+     * Process checkout with multiple payment methods
+     */
+    processCheckoutWithMultiplePayments(checkoutData) {
+        const {
+            cart,
+            payments, // Array of {method: 'cash'|'card', amount: number}
+            customerId = null,
+            subtotal,
+            discount = 0,
+            total
+        } = checkoutData;
+
+        // Validate payments total
+        const paymentsTotal = payments.reduce((sum, p) => sum + p.amount, 0);
+        if (Math.abs(paymentsTotal - total) > 0.01) {
+            return {
+                success: false,
+                errors: ['Сумата на плащанията не съответства на общата сума']
+            };
+        }
+
+        // Use existing checkout logic but store multiple payments
+        const result = this.processCheckout({
+            ...checkoutData,
+            paymentMethod: 'multiple' // Mark as multiple
+        });
+
+        if (result.success) {
+            // Add payments array to sale
+            result.sale.payments = payments;
+        }
+
+        return result;
+    }
+
+    /**
      * Process checkout and create sale
      */
     processCheckout(checkoutData) {
