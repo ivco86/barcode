@@ -1272,10 +1272,15 @@ class POSSystem {
         });
 
         // Generate QR code
-        const canvas = document.getElementById('qrcodeImage');
-        QRCode.toCanvas(canvas, `${product.name}\nБаркод: ${product.barcode}\nЦена: ${product.price} лв`, {
+        const qrcodeDiv = document.getElementById('qrcodeImage');
+        qrcodeDiv.innerHTML = ''; // Clear previous QR code
+        new QRCode(qrcodeDiv, {
+            text: `${product.name}\nБаркод: ${product.barcode}\nЦена: ${product.price} лв`,
             width: 200,
-            margin: 2
+            height: 200,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
         });
 
         document.getElementById('barcodeModal').style.display = 'block';

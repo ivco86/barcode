@@ -1176,6 +1176,13 @@ form {
 
 #qrcodeImage {
     margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#qrcodeImage img,
+#qrcodeImage canvas {
     display: block;
 }
 
