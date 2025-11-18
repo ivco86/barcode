@@ -1,6 +1,6 @@
 /**
- * Main Application Entry Point - v7.0
- * ES6 Modular POS System with Cashier Helper Features
+ * Main Application Entry Point - v8.0
+ * ES6 Modular POS System with Price Intelligence & Customer Insights
  */
 
 // Import Core Services
@@ -48,6 +48,11 @@ import { TaxComplianceService } from './services/TaxComplianceService.js';
 import { MistakeRecoveryService } from './services/MistakeRecoveryService.js';
 import { CashHelperService } from './services/CashHelperService.js';
 import { SmartFinderService } from './services/SmartFinderService.js';
+
+// Import Price Intelligence Services (v8.0)
+import { CompetitorTrackingService } from './services/CompetitorTrackingService.js';
+import { PriceOptimizationService } from './services/PriceOptimizationService.js';
+import { CustomerBehaviorService } from './services/CustomerBehaviorService.js';
 
 // Import UI
 import { UIManager } from './ui/UIManager.js';
@@ -216,6 +221,23 @@ class POSApplication {
         this.services.smartFinder = new SmartFinderService(
             this.services.product,
             this.services.sales
+        );
+
+        // Price intelligence services (v8.0)
+        this.services.competitorTracking = new CompetitorTrackingService(
+            this.services.product
+        );
+
+        this.services.priceOptimization = new PriceOptimizationService(
+            this.services.product,
+            this.services.sales,
+            this.services.competitorTracking
+        );
+
+        this.services.customerBehavior = new CustomerBehaviorService(
+            this.services.sales,
+            this.services.customer,
+            this.services.product
         );
 
         // Initialize UI
