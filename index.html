@@ -3,19 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#667eea">
     <title>POS Система - Каса и Инвентар</title>
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="styles.css">
+    <!-- CDN Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 </head>
 <body>
     <div class="container">
         <!-- Header -->
         <header>
             <h1>🛒 POS Система</h1>
-            <div class="header-actions">
+            <div class="header-nav">
+                <button id="posBtn" class="btn btn-primary">🛒 Каса</button>
                 <button id="inventoryBtn" class="btn btn-secondary">📦 Инвентар</button>
-                <button id="addProductBtn" class="btn btn-success">➕ Нов Продукт</button>
+                <button id="salesHistoryBtn" class="btn btn-secondary">📊 Продажби</button>
+                <button id="reportsBtn" class="btn btn-secondary">📈 Отчети</button>
+                <button id="customersBtn" class="btn btn-secondary">👥 Клиенти</button>
+                <button id="addProductBtn" class="btn btn-success">➕ Продукт</button>
+            </div>
+            <div class="header-user">
+                <span id="currentUserDisplay">👤 Потребител</span>
+                <button id="logoutBtn" class="btn btn-danger btn-small">Изход</button>
             </div>
         </header>
+
+        <!-- Low Stock Alert Banner -->
+        <div id="lowStockBanner" class="low-stock-banner" style="display: none;"></div>
 
         <!-- Main POS Interface -->
         <div id="posView" class="main-view">
@@ -62,6 +79,13 @@
                 <!-- Shopping Cart -->
                 <div class="cart-section">
                     <h2>Количка</h2>
+                    <div class="customer-selector">
+                        <label for="customerSelect">Клиент:</label>
+                        <select id="customerSelect" class="customer-select">
+                            <option value="">Без клиент</option>
+                        </select>
+                        <button id="addCustomerQuick" class="btn btn-primary btn-small" title="Добави нов клиент">➕</button>
+                    </div>
                     <div id="cartItems" class="cart-items"></div>
                     <div class="cart-summary">
                         <div class="total-line">
@@ -85,7 +109,10 @@
         <div id="inventoryView" class="main-view" style="display: none;">
             <div class="inventory-header">
                 <h2>📦 Управление на Инвентар</h2>
-                <button id="backToPosBtn" class="btn btn-secondary">← Назад към Каса</button>
+                <div class="header-actions">
+                    <button id="exportInventoryBtn" class="btn btn-success">📥 Експорт CSV</button>
+                    <button id="categoryManagerBtn" class="btn btn-primary">🏷️ Категории</button>
+                </div>
             </div>
             <div class="inventory-controls">
                 <input
@@ -94,6 +121,9 @@
                     placeholder="Търсене в инвентара..."
                     class="search-input"
                 >
+                <select id="categoryFilter" class="filter-select">
+                    <option value="all">Всички категории</option>
+                </select>
                 <select id="stockFilter" class="filter-select">
                     <option value="all">Всички продукти</option>
                     <option value="low">Нисък запас (< 10)</option>
@@ -101,6 +131,89 @@
                 </select>
             </div>
             <div id="inventoryList" class="inventory-list"></div>
+        </div>
+
+        <!-- Sales History View -->
+        <div id="salesHistoryView" class="main-view" style="display: none;">
+            <div class="inventory-header">
+                <h2>📊 История на Продажбите</h2>
+                <div class="header-actions">
+                    <button id="exportSalesBtn" class="btn btn-success">📥 Експорт CSV</button>
+                    <button id="printReceiptListBtn" class="btn btn-primary">🖨️ Печат на списък</button>
+                </div>
+            </div>
+            <div class="sales-filters">
+                <input type="date" id="salesFromDate" class="filter-input">
+                <input type="date" id="salesToDate" class="filter-input">
+                <select id="salesMethodFilter" class="filter-select">
+                    <option value="all">Всички методи</option>
+                    <option value="cash">В брой</option>
+                    <option value="card">Карта</option>
+                </select>
+                <button id="filterSalesBtn" class="btn btn-primary">Филтрирай</button>
+            </div>
+            <div id="salesList" class="sales-list"></div>
+        </div>
+
+        <!-- Reports View -->
+        <div id="reportsView" class="main-view" style="display: none;">
+            <div class="inventory-header">
+                <h2>📈 Отчети и Статистики</h2>
+            </div>
+            <div class="reports-period">
+                <button class="btn btn-primary period-btn" data-period="day">Днес</button>
+                <button class="btn btn-secondary period-btn" data-period="week">Седмица</button>
+                <button class="btn btn-secondary period-btn" data-period="month">Месец</button>
+                <button class="btn btn-secondary period-btn" data-period="all">Всичко</button>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Обща сума</h3>
+                    <div class="stat-value" id="statTotalSales">0.00 лв</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Брой продажби</h3>
+                    <div class="stat-value" id="statSalesCount">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Средна продажба</h3>
+                    <div class="stat-value" id="statAvgSale">0.00 лв</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Най-продаван</h3>
+                    <div class="stat-value" id="statTopProduct">-</div>
+                </div>
+            </div>
+            <div class="charts-grid">
+                <div class="chart-container">
+                    <h3>Продажби по дни</h3>
+                    <canvas id="salesChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3>Продажби по метод</h3>
+                    <canvas id="paymentMethodChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customers View -->
+        <div id="customersView" class="main-view" style="display: none;">
+            <div class="inventory-header">
+                <h2>👥 Управление на Клиенти</h2>
+                <div class="header-actions">
+                    <button id="addCustomerBtn" class="btn btn-success">➕ Нов Клиент</button>
+                    <button id="exportCustomersBtn" class="btn btn-primary">📥 Експорт CSV</button>
+                </div>
+            </div>
+            <div class="inventory-controls">
+                <input
+                    type="text"
+                    id="customerSearch"
+                    placeholder="Търсене на клиент..."
+                    class="search-input"
+                >
+            </div>
+            <div id="customersList" class="customers-list"></div>
         </div>
 
         <!-- Add Product Modal -->
@@ -201,8 +314,177 @@
                 <div id="paymentResult" class="payment-result"></div>
             </div>
         </div>
+
+        <!-- Login Modal -->
+        <div id="loginModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>🔐 Вход в POS Система</h2>
+                </div>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="loginUsername">Потребител:</label>
+                        <input type="text" id="loginUsername" required autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Парола:</label>
+                        <input type="password" id="loginPassword" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-success">Вход</button>
+                    </div>
+                    <div id="loginError" class="error-message" style="display: none;"></div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Add Customer Modal -->
+        <div id="addCustomerModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>➕ Добави Нов Клиент</h2>
+                    <span class="close">&times;</span>
+                </div>
+                <form id="addCustomerForm">
+                    <div class="form-group">
+                        <label for="customerName">Име:</label>
+                        <input type="text" id="customerName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="customerPhone">Телефон:</label>
+                        <input type="tel" id="customerPhone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="customerEmail">Email:</label>
+                        <input type="email" id="customerEmail">
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary cancel-btn">Откажи</button>
+                        <button type="submit" class="btn btn-success">Запази Клиент</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Edit Customer Modal -->
+        <div id="editCustomerModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>✏️ Редактирай Клиент</h2>
+                    <span class="close">&times;</span>
+                </div>
+                <form id="editCustomerForm">
+                    <input type="hidden" id="editCustomerId">
+                    <div class="form-group">
+                        <label for="editCustomerName">Име:</label>
+                        <input type="text" id="editCustomerName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editCustomerPhone">Телефон:</label>
+                        <input type="tel" id="editCustomerPhone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editCustomerEmail">Email:</label>
+                        <input type="email" id="editCustomerEmail">
+                    </div>
+                    <div class="form-group">
+                        <label>Точки: <span id="editCustomerPoints">0</span></label>
+                        <label>Общо изразходвано: <span id="editCustomerSpent">0.00 лв</span></label>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary cancel-btn">Откажи</button>
+                        <button type="submit" class="btn btn-success">Запази Промени</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Category Manager Modal -->
+        <div id="categoryModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>🏷️ Управление на Категории</h2>
+                    <span class="close">&times;</span>
+                </div>
+                <div class="category-manager">
+                    <div class="form-group">
+                        <label>Добави нова категория:</label>
+                        <div class="category-add">
+                            <input type="text" id="newCategoryName" placeholder="Име на категория">
+                            <button id="addCategoryBtn" class="btn btn-success">Добави</button>
+                        </div>
+                    </div>
+                    <div id="categoryList" class="category-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Receipt Print Modal -->
+        <div id="receiptModal" class="modal">
+            <div class="modal-content receipt-modal">
+                <div class="modal-header">
+                    <h2>🧾 Касова Бележка</h2>
+                    <span class="close">&times;</span>
+                </div>
+                <div id="receiptContent" class="receipt-content"></div>
+                <div class="form-actions">
+                    <button id="printReceiptBtn" class="btn btn-primary">🖨️ Принтирай</button>
+                    <button class="btn btn-secondary cancel-btn">Затвори</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sale Details Modal -->
+        <div id="saleDetailsModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>📋 Детайли на Продажба</h2>
+                    <span class="close">&times;</span>
+                </div>
+                <div id="saleDetailsContent" class="sale-details-content"></div>
+                <div class="form-actions">
+                    <button id="printSaleReceiptBtn" class="btn btn-primary">🖨️ Принтирай</button>
+                    <button class="btn btn-secondary cancel-btn">Затвори</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Barcode/QR Modal -->
+        <div id="barcodeModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Баркод и QR Код</h2>
+                    <span class="close">&times;</span>
+                </div>
+                <div class="barcode-content">
+                    <h3 id="barcodeProductName"></h3>
+                    <div class="barcode-display">
+                        <h4>Баркод</h4>
+                        <svg id="barcodeImage"></svg>
+                    </div>
+                    <div class="qr-display">
+                        <h4>QR Код</h4>
+                        <canvas id="qrcodeImage"></canvas>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button id="printBarcodeBtn" class="btn btn-primary">🖨️ Принтирай</button>
+                    <button class="btn btn-secondary cancel-btn">Затвори</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="app.js"></script>
+    <script>
+        // Register Service Worker for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => console.log('ServiceWorker registered'))
+                    .catch(err => console.log('ServiceWorker registration failed:', err));
+            });
+        }
+    </script>
 </body>
 </html>
