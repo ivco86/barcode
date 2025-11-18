@@ -1,6 +1,6 @@
 /**
- * Main Application Entry Point - v6.0
- * ES6 Modular POS System with Advanced Reporting & Analytics
+ * Main Application Entry Point - v7.0
+ * ES6 Modular POS System with Cashier Helper Features
  */
 
 // Import Core Services
@@ -43,6 +43,11 @@ import { ProductPerformanceService } from './services/ProductPerformanceService.
 import { ComparativeAnalysisService } from './services/ComparativeAnalysisService.js';
 import { ReportSchedulerService } from './services/ReportSchedulerService.js';
 import { TaxComplianceService } from './services/TaxComplianceService.js';
+
+// Import Cashier Helper Services (v7.0)
+import { MistakeRecoveryService } from './services/MistakeRecoveryService.js';
+import { CashHelperService } from './services/CashHelperService.js';
+import { SmartFinderService } from './services/SmartFinderService.js';
 
 // Import UI
 import { UIManager } from './ui/UIManager.js';
@@ -194,6 +199,23 @@ class POSApplication {
             this.services.sales,
             this.services.product,
             this.services.supplier
+        );
+
+        // Cashier helper services (v7.0)
+        this.services.mistakeRecovery = new MistakeRecoveryService(
+            this.services.sales,
+            this.services.product,
+            this.services.auth
+        );
+
+        this.services.cashHelper = new CashHelperService(
+            this.services.shift,
+            this.services.auth
+        );
+
+        this.services.smartFinder = new SmartFinderService(
+            this.services.product,
+            this.services.sales
         );
 
         // Initialize UI
