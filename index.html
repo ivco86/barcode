@@ -22,13 +22,37 @@
             <div class="pos-container">
                 <!-- Product Search/Scan -->
                 <div class="search-section">
-                    <h2>Търсене на продукт</h2>
+                    <!-- Quick Barcode Scan -->
+                    <div class="quick-scan-section">
+                        <h2>⚡ Бързо сканиране</h2>
+                        <div class="quick-scan-box">
+                            <input
+                                type="text"
+                                id="quickBarcodeInput"
+                                placeholder="Баркод + Enter = Добави в количка"
+                                autofocus
+                            >
+                            <input
+                                type="number"
+                                id="quickQuantity"
+                                value="1"
+                                min="1"
+                                class="quantity-input"
+                                title="Количество"
+                            >
+                            <button id="quickAddBtn" class="btn btn-success">➕ Добави</button>
+                        </div>
+                        <div id="quickScanFeedback" class="quick-scan-feedback"></div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <h2>🔍 Търсене на продукт</h2>
                     <div class="search-box">
                         <input
                             type="text"
                             id="barcodeInput"
-                            placeholder="Сканирайте баркод или въведете име на продукт..."
-                            autofocus
+                            placeholder="Търси по име, баркод или категория..."
                         >
                         <button id="searchBtn" class="btn btn-primary">Търси</button>
                     </div>

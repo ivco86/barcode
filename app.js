@@ -32,7 +32,7 @@ class POSSystem {
             this.products = [
                 {
                     id: 1,
-                    barcode: '1234567890',
+                    barcode: '1',
                     name: 'Хляб бял',
                     price: 1.50,
                     stock: 50,
@@ -40,7 +40,7 @@ class POSSystem {
                 },
                 {
                     id: 2,
-                    barcode: '2345678901',
+                    barcode: '2',
                     name: 'Мляко 1л',
                     price: 2.80,
                     stock: 30,
@@ -48,7 +48,7 @@ class POSSystem {
                 },
                 {
                     id: 3,
-                    barcode: '3456789012',
+                    barcode: '3',
                     name: 'Кафе 200г',
                     price: 8.50,
                     stock: 15,
@@ -56,7 +56,7 @@ class POSSystem {
                 },
                 {
                     id: 4,
-                    barcode: '4567890123',
+                    barcode: '4',
                     name: 'Масло 500г',
                     price: 4.20,
                     stock: 25,
@@ -64,7 +64,7 @@ class POSSystem {
                 },
                 {
                     id: 5,
-                    barcode: '5678901234',
+                    barcode: '5',
                     name: 'Сирене 400г',
                     price: 6.50,
                     stock: 8,
@@ -72,7 +72,7 @@ class POSSystem {
                 },
                 {
                     id: 6,
-                    barcode: '6789012345',
+                    barcode: '6',
                     name: 'Шоколад Милка',
                     price: 3.20,
                     stock: 0,
@@ -80,7 +80,7 @@ class POSSystem {
                 },
                 {
                     id: 7,
-                    barcode: '7890123456',
+                    barcode: '7',
                     name: 'Вода минерална 1.5л',
                     price: 1.20,
                     stock: 100,
@@ -88,7 +88,7 @@ class POSSystem {
                 },
                 {
                     id: 8,
-                    barcode: '8901234567',
+                    barcode: '8',
                     name: 'Ориз 1кг',
                     price: 3.50,
                     stock: 40,
@@ -105,6 +105,21 @@ class POSSystem {
         document.getElementById('inventoryBtn').addEventListener('click', () => this.showView('inventory'));
         document.getElementById('backToPosBtn').addEventListener('click', () => this.showView('pos'));
         document.getElementById('addProductBtn').addEventListener('click', () => this.openAddProductModal());
+
+        // Quick Scan
+        document.getElementById('quickBarcodeInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                this.quickAddToCart();
+            }
+        });
+        document.getElementById('quickQuantity').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('quickBarcodeInput').focus();
+            }
+        });
+        document.getElementById('quickAddBtn').addEventListener('click', () => this.quickAddToCart());
 
         // Search
         document.getElementById('searchBtn').addEventListener('click', () => this.searchProducts());
@@ -220,6 +235,90 @@ class POSSystem {
         if (stock === 0) return 'Изчерпан';
         if (stock < 10) return `Нисък запас: ${stock}`;
         return `В наличност: ${stock}`;
+    }
+
+    // Quick Barcode Add to Cart
+    quickAddToCart() {
+        const barcodeInput = document.getElementById('quickBarcodeInput');
+        const quantityInput = document.getElementById('quickQuantity');
+        const feedbackDiv = document.getElementById('quickScanFeedback');
+
+        const barcode = barcodeInput.value.trim();
+        const quantity = parseInt(quantityInput.value) || 1;
+
+        if (!barcode) {
+            this.showQuickFeedback('Моля, въведете баркод!', 'error');
+            return;
+        }
+
+        // Find product by exact barcode match
+        const product = this.products.find(p => p.barcode === barcode);
+
+        if (!product) {
+            this.showQuickFeedback(`❌ Продукт с баркод "${barcode}" не е намерен!`, 'error');
+            barcodeInput.value = '';
+            barcodeInput.focus();
+            return;
+        }
+
+        if (product.stock === 0) {
+            this.showQuickFeedback(`⚠️ "${product.name}" е изчерпан!`, 'warning');
+            barcodeInput.value = '';
+            barcodeInput.focus();
+            return;
+        }
+
+        const cartItem = this.cart.find(item => item.id === product.id);
+        const currentCartQuantity = cartItem ? cartItem.quantity : 0;
+        const newTotalQuantity = currentCartQuantity + quantity;
+
+        if (newTotalQuantity > product.stock) {
+            this.showQuickFeedback(
+                `⚠️ Недостатъчна наличност! В наличност: ${product.stock}, В количка: ${currentCartQuantity}`,
+                'warning'
+            );
+            barcodeInput.value = '';
+            barcodeInput.focus();
+            return;
+        }
+
+        // Add to cart
+        if (cartItem) {
+            cartItem.quantity += quantity;
+        } else {
+            this.cart.push({
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                quantity: quantity,
+                maxStock: product.stock
+            });
+        }
+
+        this.renderCart();
+
+        const totalPrice = product.price * quantity;
+        this.showQuickFeedback(
+            `✓ Добавен: ${product.name} × ${quantity} = ${totalPrice.toFixed(2)} лв`,
+            'success'
+        );
+
+        // Clear inputs and refocus
+        barcodeInput.value = '';
+        quantityInput.value = '1';
+        barcodeInput.focus();
+
+        // Auto-clear feedback after 3 seconds
+        setTimeout(() => {
+            feedbackDiv.innerHTML = '';
+            feedbackDiv.className = 'quick-scan-feedback';
+        }, 3000);
+    }
+
+    showQuickFeedback(message, type) {
+        const feedbackDiv = document.getElementById('quickScanFeedback');
+        feedbackDiv.innerHTML = message;
+        feedbackDiv.className = `quick-scan-feedback feedback-${type}`;
     }
 
     // Cart Management
