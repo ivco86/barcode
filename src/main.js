@@ -1,6 +1,6 @@
 /**
- * Main Application Entry Point - v9.0
- * ES6 Modular POS System with Revenue Boost Suite
+ * Main Application Entry Point - v9.1
+ * ES6 Modular POS System with Revenue Boost Suite Phase 2
  */
 
 // Import Core Services
@@ -58,6 +58,11 @@ import { CustomerBehaviorService } from './services/CustomerBehaviorService.js';
 import { GiftCardService } from './services/GiftCardService.js';
 import { UpsellEngineService } from './services/UpsellEngineService.js';
 import { BundleOptimizerService } from './services/BundleOptimizerService.js';
+
+// Import Revenue Boost Services Phase 2 (v9.1)
+import { FlashSalesService } from './services/FlashSalesService.js';
+import { LossLeaderService } from './services/LossLeaderService.js';
+import { SeasonalCampaignService } from './services/SeasonalCampaignService.js';
 
 // Import UI
 import { UIManager } from './ui/UIManager.js';
@@ -259,6 +264,24 @@ class POSApplication {
         this.services.bundleOptimizer = new BundleOptimizerService(
             this.services.product,
             this.services.sales
+        );
+
+        // Revenue boost services Phase 2 (v9.1)
+        this.services.flashSales = new FlashSalesService(
+            this.services.product,
+            this.services.sales
+        );
+
+        this.services.lossLeader = new LossLeaderService(
+            this.services.product,
+            this.services.sales
+        );
+
+        this.services.seasonalCampaign = new SeasonalCampaignService(
+            this.services.product,
+            this.services.sales,
+            this.services.bundleOptimizer,
+            this.services.flashSales
         );
 
         // Initialize UI
