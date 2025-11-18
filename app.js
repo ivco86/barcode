@@ -18,7 +18,13 @@ class POSSystem {
     init() {
         this.loadAllData();
         this.loadSampleData();
+        this.setupLoginListener();
         this.checkLogin();
+    }
+
+    setupLoginListener() {
+        // Set up login form listener before checking login status
+        document.getElementById('loginForm').addEventListener('submit', (e) => this.handleLogin(e));
     }
 
     initAfterLogin() {
@@ -268,7 +274,7 @@ class POSSystem {
         document.getElementById('addCustomerQuick').addEventListener('click', () => this.openAddCustomerModal());
 
         // Forms
-        document.getElementById('loginForm').addEventListener('submit', (e) => this.handleLogin(e));
+        // Login form listener is set up in setupLoginListener() before login check
         document.getElementById('addProductForm').addEventListener('submit', (e) => {
             e.preventDefault();
             this.addProduct();
