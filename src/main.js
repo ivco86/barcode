@@ -1,6 +1,6 @@
 /**
- * Main Application Entry Point - v5.0
- * ES6 Modular POS System with Enterprise AI Features
+ * Main Application Entry Point - v6.0
+ * ES6 Modular POS System with Advanced Reporting & Analytics
  */
 
 // Import Core Services
@@ -36,6 +36,13 @@ import { AIInventoryService } from './services/AIInventoryService.js';
 import { EmployeePerformanceService } from './services/EmployeePerformanceService.js';
 import { AutoReorderingService } from './services/AutoReorderingService.js';
 import { MarketingAutomationService } from './services/MarketingAutomationService.js';
+
+// Import Reporting Services (v6.0)
+import { FinancialReportingService } from './services/FinancialReportingService.js';
+import { ProductPerformanceService } from './services/ProductPerformanceService.js';
+import { ComparativeAnalysisService } from './services/ComparativeAnalysisService.js';
+import { ReportSchedulerService } from './services/ReportSchedulerService.js';
+import { TaxComplianceService } from './services/TaxComplianceService.js';
 
 // Import UI
 import { UIManager } from './ui/UIManager.js';
@@ -156,6 +163,37 @@ class POSApplication {
             this.services.customer,
             this.services.sales,
             this.services.analytics
+        );
+
+        // Reporting services (v6.0)
+        this.services.financialReporting = new FinancialReportingService(
+            this.services.sales,
+            this.services.product,
+            this.services.customer
+        );
+
+        this.services.productPerformance = new ProductPerformanceService(
+            this.services.product,
+            this.services.sales,
+            this.services.customer
+        );
+
+        this.services.comparativeAnalysis = new ComparativeAnalysisService(
+            this.services.sales,
+            this.services.product,
+            this.services.customer
+        );
+
+        this.services.reportScheduler = new ReportSchedulerService(
+            this.services.financialReporting,
+            this.services.productPerformance,
+            this.services.comparativeAnalysis
+        );
+
+        this.services.taxCompliance = new TaxComplianceService(
+            this.services.sales,
+            this.services.product,
+            this.services.supplier
         );
 
         // Initialize UI
