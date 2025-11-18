@@ -1,6 +1,6 @@
 /**
- * Main Application Entry Point - v4.0
- * ES6 Modular POS System with Advanced AI Features
+ * Main Application Entry Point - v5.0
+ * ES6 Modular POS System with Enterprise AI Features
  */
 
 // Import Core Services
@@ -30,6 +30,12 @@ import { MultiStoreService } from './services/MultiStoreService.js';
 import { DynamicPricingService } from './services/DynamicPricingService.js';
 import { AnalyticsService } from './services/AnalyticsService.js';
 import { BlockchainService } from './services/BlockchainService.js';
+
+// Import Enterprise Services (v5.0)
+import { AIInventoryService } from './services/AIInventoryService.js';
+import { EmployeePerformanceService } from './services/EmployeePerformanceService.js';
+import { AutoReorderingService } from './services/AutoReorderingService.js';
+import { MarketingAutomationService } from './services/MarketingAutomationService.js';
 
 // Import UI
 import { UIManager } from './ui/UIManager.js';
@@ -125,6 +131,32 @@ class POSApplication {
         );
 
         this.services.blockchain = new BlockchainService(this.services.sales);
+
+        // Enterprise services (v5.0)
+        this.services.aiInventory = new AIInventoryService(
+            this.services.product,
+            this.services.sales,
+            this.services.forecast
+        );
+
+        this.services.employeePerformance = new EmployeePerformanceService(
+            this.services.sales,
+            this.services.auth,
+            this.services.gamification
+        );
+
+        this.services.autoReordering = new AutoReorderingService(
+            this.services.aiInventory,
+            this.services.supplier,
+            this.services.product,
+            this.services.auth
+        );
+
+        this.services.marketingAutomation = new MarketingAutomationService(
+            this.services.customer,
+            this.services.sales,
+            this.services.analytics
+        );
 
         // Initialize UI
         this.ui = null;
