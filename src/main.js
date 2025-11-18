@@ -1,6 +1,6 @@
 /**
- * Main Application Entry Point - v8.0
- * ES6 Modular POS System with Price Intelligence & Customer Insights
+ * Main Application Entry Point - v9.0
+ * ES6 Modular POS System with Revenue Boost Suite
  */
 
 // Import Core Services
@@ -53,6 +53,11 @@ import { SmartFinderService } from './services/SmartFinderService.js';
 import { CompetitorTrackingService } from './services/CompetitorTrackingService.js';
 import { PriceOptimizationService } from './services/PriceOptimizationService.js';
 import { CustomerBehaviorService } from './services/CustomerBehaviorService.js';
+
+// Import Revenue Boost Services (v9.0)
+import { GiftCardService } from './services/GiftCardService.js';
+import { UpsellEngineService } from './services/UpsellEngineService.js';
+import { BundleOptimizerService } from './services/BundleOptimizerService.js';
 
 // Import UI
 import { UIManager } from './ui/UIManager.js';
@@ -238,6 +243,22 @@ class POSApplication {
             this.services.sales,
             this.services.customer,
             this.services.product
+        );
+
+        // Revenue boost services (v9.0)
+        this.services.giftCard = new GiftCardService(
+            this.services.sales
+        );
+
+        this.services.upsellEngine = new UpsellEngineService(
+            this.services.product,
+            this.services.sales,
+            this.services.customer
+        );
+
+        this.services.bundleOptimizer = new BundleOptimizerService(
+            this.services.product,
+            this.services.sales
         );
 
         // Initialize UI
