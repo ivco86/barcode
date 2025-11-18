@@ -4,6 +4,7 @@
  */
 import { UIHandlers } from './UIHandlers.js';
 import { UIRenders } from './UIRenders.js';
+import { UIHandlersV3 } from './UIHandlersV3.js';
 
 export class UIManager {
     constructor(services) {
@@ -15,6 +16,7 @@ export class UIManager {
         // Extend with handlers and renders
         Object.assign(this, UIHandlers);
         Object.assign(this, UIRenders);
+        Object.assign(this, UIHandlersV3); // v3.0 features
     }
 
     /**
