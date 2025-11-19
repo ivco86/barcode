@@ -699,6 +699,211 @@ form {
     color: #999;
 }
 
+/* Tabs v9.0/v9.1 */
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+    border-bottom: 2px solid #e0e0e0;
+    flex-wrap: wrap;
+}
+
+.tab-btn {
+    padding: 12px 24px;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #666;
+    transition: all 0.3s ease;
+    position: relative;
+    bottom: -2px;
+}
+
+.tab-btn:hover {
+    color: #667eea;
+    background: rgba(102, 126, 234, 0.05);
+}
+
+.tab-btn.active {
+    color: #667eea;
+    border-bottom-color: #667eea;
+    font-weight: 600;
+}
+
+.tab-content {
+    display: none;
+    padding: 20px;
+    animation: fadeIn 0.3s ease;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Cards List */
+.cards-list,
+.bundles-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.card-item,
+.bundle-item {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.card-item:hover,
+.bundle-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.card-header,
+.bundle-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 15px;
+}
+
+.card-code {
+    font-size: 18px;
+    font-weight: 600;
+    color: #667eea;
+    font-family: monospace;
+}
+
+.card-status,
+.bundle-status {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-active {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-depleted,
+.status-expired {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.status-scheduled {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.card-details,
+.bundle-details {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.6;
+}
+
+.card-balance {
+    font-size: 24px;
+    font-weight: 700;
+    color: #28a745;
+    margin: 10px 0;
+}
+
+.card-original {
+    font-size: 14px;
+    color: #999;
+    text-decoration: line-through;
+}
+
+/* Flash Sales Specific */
+.flash-sale-item {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+}
+
+.flash-sale-item .card-code {
+    color: #fff;
+}
+
+.countdown {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffd700;
+    margin: 10px 0;
+    font-family: monospace;
+}
+
+.stock-indicator {
+    display: inline-block;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Campaign Cards */
+.campaign-item {
+    border-left: 4px solid #667eea;
+}
+
+.campaign-icon {
+    font-size: 32px;
+    margin-right: 10px;
+}
+
+.campaign-dates {
+    font-size: 12px;
+    color: #999;
+    margin-top: 5px;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+}
+
+.empty-state-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+    opacity: 0.3;
+}
+
+.empty-state h3 {
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.empty-state p {
+    margin-bottom: 20px;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .pos-container {

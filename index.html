@@ -23,6 +23,11 @@
                 <button id="salesHistoryBtn" class="btn btn-secondary">📊 Продажби</button>
                 <button id="reportsBtn" class="btn btn-secondary">📈 Отчети</button>
                 <button id="customersBtn" class="btn btn-secondary">👥 Клиенти</button>
+                <!-- Revenue Boost v9.0 + v9.1 -->
+                <button id="giftCardsBtn" class="btn btn-secondary">🎁 Gift Cards</button>
+                <button id="bundlesBtn" class="btn btn-secondary">📦 Bundles</button>
+                <button id="flashSalesBtn" class="btn btn-secondary">⚡ Flash Sales</button>
+                <button id="campaignsBtn" class="btn btn-secondary">🎄 Campaigns</button>
                 <button id="addProductBtn" class="btn btn-success">➕ Продукт</button>
             </div>
             <div class="header-user">
@@ -214,6 +219,124 @@
                 >
             </div>
             <div id="customersList" class="customers-list"></div>
+        </div>
+
+        <!-- Gift Cards View (v9.0) -->
+        <div id="giftCardsView" class="main-view" style="display: none;">
+            <div class="inventory-header">
+                <h2>🎁 Gift Cards & Vouchers</h2>
+                <div class="header-actions">
+                    <button id="createGiftCardBtn" class="btn btn-success">➕ Нова Gift Card</button>
+                    <button id="createVoucherBtn" class="btn btn-primary">🎟️ Нов Voucher</button>
+                    <button id="checkCodeBtn" class="btn btn-secondary">🔍 Провери Код</button>
+                </div>
+            </div>
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="activeCards">Активни Карти</button>
+                <button class="tab-btn" data-tab="vouchers">Ваучери</button>
+                <button class="tab-btn" data-tab="giftCardReports">Отчети</button>
+            </div>
+            <div id="activeCards" class="tab-content active">
+                <div id="giftCardsList" class="cards-list">
+                    <p style="text-align: center; color: #666;">Зареждане...</p>
+                </div>
+            </div>
+            <div id="vouchers" class="tab-content">
+                <div id="vouchersList" class="cards-list">
+                    <p style="text-align: center; color: #666;">Зареждане...</p>
+                </div>
+            </div>
+            <div id="giftCardReports" class="tab-content">
+                <div id="giftCardReportsContent"></div>
+            </div>
+        </div>
+
+        <!-- Bundles View (v9.0) -->
+        <div id="bundlesView" class="main-view" style="display: none;">
+            <div class="inventory-header">
+                <h2>📦 Product Bundles</h2>
+                <div class="header-actions">
+                    <button id="createBundleBtn" class="btn btn-success">➕ Създай Bundle</button>
+                    <button id="discoverBundlesBtn" class="btn btn-primary">🤖 AI Discovery</button>
+                    <button id="bundleReportsBtn" class="btn btn-secondary">📊 Отчети</button>
+                </div>
+            </div>
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="activeBundles">Активни Bundles</button>
+                <button class="tab-btn" data-tab="bundleOpportunities">Възможности</button>
+                <button class="tab-btn" data-tab="bundlePerformance">Performance</button>
+            </div>
+            <div id="activeBundles" class="tab-content active">
+                <div id="bundlesList" class="bundles-list">
+                    <p style="text-align: center; color: #666;">Зареждане...</p>
+                </div>
+            </div>
+            <div id="bundleOpportunities" class="tab-content">
+                <div id="opportunitiesList"></div>
+            </div>
+            <div id="bundlePerformance" class="tab-content">
+                <div id="bundlePerformanceContent"></div>
+            </div>
+        </div>
+
+        <!-- Flash Sales View (v9.1) -->
+        <div id="flashSalesView" class="main-view" style="display: none;">
+            <div class="inventory-header">
+                <h2>⚡ Flash Sales & Happy Hours</h2>
+                <div class="header-actions">
+                    <button id="createFlashSaleBtn" class="btn btn-success">➕ Flash Sale</button>
+                    <button id="createHappyHourBtn" class="btn btn-primary">🕐 Happy Hour</button>
+                    <button id="createDailyDealBtn" class="btn btn-secondary">📅 Daily Deal</button>
+                </div>
+            </div>
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="activeFlashSales">Активни Sales</button>
+                <button class="tab-btn" data-tab="happyHours">Happy Hours</button>
+                <button class="tab-btn" data-tab="dailyDeals">Daily Deals</button>
+                <button class="tab-btn" data-tab="flashReports">Отчети</button>
+            </div>
+            <div id="activeFlashSales" class="tab-content active">
+                <div id="flashSalesList"></div>
+            </div>
+            <div id="happyHours" class="tab-content">
+                <div id="happyHoursList"></div>
+            </div>
+            <div id="dailyDeals" class="tab-content">
+                <div id="dailyDealsList"></div>
+            </div>
+            <div id="flashReports" class="tab-content">
+                <div id="flashReportsContent"></div>
+            </div>
+        </div>
+
+        <!-- Campaigns View (v9.1) -->
+        <div id="campaignsView" class="main-view" style="display: none;">
+            <div class="inventory-header">
+                <h2>🎄 Seasonal Campaigns</h2>
+                <div class="header-actions">
+                    <button id="createCampaignBtn" class="btn btn-success">➕ Нова Campaign</button>
+                    <button id="autoCreateCampaignsBtn" class="btn btn-primary">🤖 Auto-Create 2025</button>
+                    <button id="upcomingCampaignsBtn" class="btn btn-secondary">📅 Upcoming</button>
+                </div>
+            </div>
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="allCampaigns">Всички Campaigns</button>
+                <button class="tab-btn" data-tab="activeCampaigns">Активни</button>
+                <button class="tab-btn" data-tab="campaignTemplates">Templates</button>
+                <button class="tab-btn" data-tab="campaignReports">Отчети</button>
+            </div>
+            <div id="allCampaigns" class="tab-content active">
+                <div id="campaignsList"></div>
+            </div>
+            <div id="activeCampaigns" class="tab-content">
+                <div id="activeCampaignsList"></div>
+            </div>
+            <div id="campaignTemplates" class="tab-content">
+                <div id="templatesContent"></div>
+            </div>
+            <div id="campaignReports" class="tab-content">
+                <div id="campaignReportsContent"></div>
+            </div>
         </div>
 
         <!-- Add Product Modal -->
