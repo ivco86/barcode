@@ -5,6 +5,7 @@
 import { UIHandlers } from './UIHandlers.js';
 import { UIRenders } from './UIRenders.js';
 import { UIHandlersV3 } from './UIHandlersV3.js';
+import { UIHandlersV9 } from './UIHandlersV9.js';
 
 export class UIManager {
     constructor(services) {
@@ -17,6 +18,7 @@ export class UIManager {
         Object.assign(this, UIHandlers);
         Object.assign(this, UIRenders);
         Object.assign(this, UIHandlersV3); // v3.0 features
+        Object.assign(this, UIHandlersV9); // v9.0 & v9.1 Revenue Boost features
     }
 
     /**
@@ -53,6 +55,13 @@ export class UIManager {
             this.generateReports();
         });
         document.getElementById('customersBtn').addEventListener('click', () => this.showView('customers'));
+
+        // v9.0 & v9.1 Navigation
+        document.getElementById('giftCardsBtn').addEventListener('click', () => this.showView('giftCards'));
+        document.getElementById('bundlesBtn').addEventListener('click', () => this.showView('bundles'));
+        document.getElementById('flashSalesBtn').addEventListener('click', () => this.showView('flashSales'));
+        document.getElementById('campaignsBtn').addEventListener('click', () => this.showView('campaigns'));
+
         document.getElementById('addProductBtn').addEventListener('click', () => this.openAddProductModal());
         document.getElementById('logoutBtn').addEventListener('click', () => this.handleLogout());
 
@@ -157,6 +166,140 @@ export class UIManager {
                 this.handlePayment(btn.dataset.method);
             });
         });
+
+        // v9.0 & v9.1 Feature Buttons
+        this.setupV9EventListeners();
+    }
+
+    /**
+     * Setup v9.0 & v9.1 event listeners
+     */
+    setupV9EventListeners() {
+        // Gift Cards
+        const createGiftCardBtn = document.getElementById('createGiftCardBtn');
+        if (createGiftCardBtn) {
+            createGiftCardBtn.addEventListener('click', () => this.openCreateGiftCardModal());
+        }
+
+        const createVoucherBtn = document.getElementById('createVoucherBtn');
+        if (createVoucherBtn) {
+            createVoucherBtn.addEventListener('click', () => this.openCreateVoucherModal());
+        }
+
+        const checkCodeBtn = document.getElementById('checkCodeBtn');
+        if (checkCodeBtn) {
+            checkCodeBtn.addEventListener('click', () => this.openCheckCodeModal());
+        }
+
+        const createGiftCardForm = document.getElementById('createGiftCardForm');
+        if (createGiftCardForm) {
+            createGiftCardForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.handleCreateGiftCard();
+            });
+        }
+
+        const createVoucherForm = document.getElementById('createVoucherForm');
+        if (createVoucherForm) {
+            createVoucherForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.handleCreateVoucher();
+            });
+        }
+
+        const checkCodeForm = document.getElementById('checkCodeForm');
+        if (checkCodeForm) {
+            checkCodeForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.handleCheckCode();
+            });
+        }
+
+        // Bundles
+        const createBundleBtn = document.getElementById('createBundleBtn');
+        if (createBundleBtn) {
+            createBundleBtn.addEventListener('click', () => this.openCreateBundleModal());
+        }
+
+        const createBundleForm = document.getElementById('createBundleForm');
+        if (createBundleForm) {
+            createBundleForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.handleCreateBundle();
+            });
+        }
+
+        // Flash Sales
+        const createFlashSaleBtn = document.getElementById('createFlashSaleBtn');
+        if (createFlashSaleBtn) {
+            createFlashSaleBtn.addEventListener('click', () => this.openCreateFlashSaleModal());
+        }
+
+        const createHappyHourBtn = document.getElementById('createHappyHourBtn');
+        if (createHappyHourBtn) {
+            createHappyHourBtn.addEventListener('click', () => this.openCreateHappyHourModal());
+        }
+
+        const createFlashSaleForm = document.getElementById('createFlashSaleForm');
+        if (createFlashSaleForm) {
+            createFlashSaleForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.handleCreateFlashSale();
+            });
+        }
+
+        const createHappyHourForm = document.getElementById('createHappyHourForm');
+        if (createHappyHourForm) {
+            createHappyHourForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.handleCreateHappyHour();
+            });
+        }
+
+        // Tab buttons - handle dynamically since they're in multiple views
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const viewId = btn.closest('.main-view').id;
+                const tabName = btn.dataset.tab;
+                this.switchTab(viewId, tabName);
+
+                // Render content for the active tab
+                this.renderActiveTab(viewId, tabName);
+            });
+        });
+    }
+
+    /**
+     * Render content for active tab
+     */
+    renderActiveTab(viewId, tabName) {
+        // Gift Cards tabs
+        if (viewId === 'giftCardsView') {
+            if (tabName === 'activeCards') this.renderGiftCards();
+            else if (tabName === 'vouchers') this.renderVouchers();
+            else if (tabName === 'giftCardReports') this.renderGiftCardReports();
+        }
+
+        // Bundles tabs
+        if (viewId === 'bundlesView') {
+            if (tabName === 'activeBundles') this.renderBundles();
+            else if (tabName === 'bundleRecommendations') this.renderBundleRecommendations();
+            else if (tabName === 'bundleReports') this.renderBundleReports();
+        }
+
+        // Flash Sales tabs
+        if (viewId === 'flashSalesView') {
+            if (tabName === 'activeFlashSales') this.renderFlashSales();
+            else if (tabName === 'scheduledSales') this.renderScheduledSales();
+            else if (tabName === 'happyHours') this.renderHappyHours();
+        }
+
+        // Campaigns tabs
+        if (viewId === 'campaignsView') {
+            if (tabName === 'activeCampaigns') this.renderActiveCampaigns();
+            else if (tabName === 'campaignTemplates') this.renderCampaignTemplates();
+            else if (tabName === 'campaignReports') this.renderCampaignReports();
+        }
     }
 
     /**
@@ -227,13 +370,29 @@ export class UIManager {
      * Show specific view
      */
     showView(view) {
+        // Hide all views
         document.getElementById('posView').style.display = view === 'pos' ? 'block' : 'none';
         document.getElementById('inventoryView').style.display = view === 'inventory' ? 'block' : 'none';
         document.getElementById('salesHistoryView').style.display = view === 'salesHistory' ? 'block' : 'none';
         document.getElementById('reportsView').style.display = view === 'reports' ? 'block' : 'none';
         document.getElementById('customersView').style.display = view === 'customers' ? 'block' : 'none';
+
+        // v9.0 & v9.1 views
+        const giftCardsView = document.getElementById('giftCardsView');
+        if (giftCardsView) giftCardsView.style.display = view === 'giftCards' ? 'block' : 'none';
+
+        const bundlesView = document.getElementById('bundlesView');
+        if (bundlesView) bundlesView.style.display = view === 'bundles' ? 'block' : 'none';
+
+        const flashSalesView = document.getElementById('flashSalesView');
+        if (flashSalesView) flashSalesView.style.display = view === 'flashSales' ? 'block' : 'none';
+
+        const campaignsView = document.getElementById('campaignsView');
+        if (campaignsView) campaignsView.style.display = view === 'campaigns' ? 'block' : 'none';
+
         this.currentView = view;
 
+        // Render view content
         if (view === 'inventory') {
             this.renderInventory();
         } else if (view === 'salesHistory') {
@@ -242,6 +401,22 @@ export class UIManager {
             this.renderCustomers();
         } else if (view === 'pos') {
             document.getElementById('quickBarcodeInput').focus();
+        } else if (view === 'giftCards') {
+            this.renderGiftCards();
+            this.renderVouchers();
+            this.renderGiftCardReports();
+        } else if (view === 'bundles') {
+            this.renderBundles();
+            this.renderBundleRecommendations();
+            this.renderBundleReports();
+        } else if (view === 'flashSales') {
+            this.renderFlashSales();
+            this.renderScheduledSales();
+            this.renderHappyHours();
+        } else if (view === 'campaigns') {
+            this.renderActiveCampaigns();
+            this.renderCampaignTemplates();
+            this.renderCampaignReports();
         }
     }
 

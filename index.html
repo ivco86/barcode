@@ -596,6 +596,281 @@
                 </div>
             </div>
         </div>
+
+        <!-- v9.0 & v9.1 Modals -->
+
+        <!-- Create Gift Card Modal -->
+        <div id="createGiftCardModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>🎁 Създай Gift Card</h2>
+                    <span class="close">&times;</span>
+                </div>
+                <form id="createGiftCardForm">
+                    <div class="form-group">
+                        <label for="giftCardAmount">Сума *</label>
+                        <input type="number" id="giftCardAmount" min="1" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="giftCardRecipient">Получател</label>
+                        <input type="text" id="giftCardRecipient" placeholder="Име на получателя">
+                    </div>
+                    <div class="form-group">
+                        <label for="giftCardEmail">Email</label>
+                        <input type="email" id="giftCardEmail" placeholder="email@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="giftCardMessage">Съобщение</label>
+                        <textarea id="giftCardMessage" rows="3" placeholder="Честит рожден ден!"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="giftCardExpiry">Валидност (дни)</label>
+                        <input type="number" id="giftCardExpiry" min="1" placeholder="Оставете празно за неограничена">
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Създай</button>
+                        <button type="button" class="btn btn-secondary cancel-btn">Отказ</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Create Voucher Modal -->
+        <div id="createVoucherModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>🎟️ Създай Ваучер</h2>
+                    <span class="close">&times;</span>
+                </div>
+                <form id="createVoucherForm">
+                    <div class="form-group">
+                        <label for="voucherCode">Код *</label>
+                        <input type="text" id="voucherCode" required placeholder="SUMMER2025">
+                    </div>
+                    <div class="form-group">
+                        <label for="voucherType">Тип *</label>
+                        <select id="voucherType" required>
+                            <option value="percentage">Процент отстъпка</option>
+                            <option value="fixed">Фиксирана сума</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="voucherValue">Стойност *</label>
+                        <input type="number" id="voucherValue" min="0.01" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="voucherMinPurchase">Минимална покупка</label>
+                        <input type="number" id="voucherMinPurchase" min="0" step="0.01" placeholder="0 = без минимум">
+                    </div>
+                    <div class="form-group">
+                        <label for="voucherMaxUses">Максимален брой използвания</label>
+                        <input type="number" id="voucherMaxUses" min="1" placeholder="Оставете празно за неограничено">
+                    </div>
+                    <div class="form-group">
+                        <label for="voucherValidUntil">Валиден до</label>
+                        <input type="datetime-local" id="voucherValidUntil">
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Създай</button>
+                        <button type="button" class="btn btn-secondary cancel-btn">Отказ</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Check Code Modal -->
+        <div id="checkCodeModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>🔍 Провери Код</h2>
+                    <span class="close">&times;</span>
+                </div>
+                <form id="checkCodeForm">
+                    <div class="form-group">
+                        <label for="checkCodeInput">Въведи Gift Card или Ваучер код</label>
+                        <input type="text" id="checkCodeInput" required placeholder="GC-XXXXXX или VOUCHERCODE">
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Провери</button>
+                        <button type="button" class="btn btn-secondary cancel-btn">Затвори</button>
+                    </div>
+                </form>
+                <div id="checkCodeResult"></div>
+            </div>
+        </div>
+
+        <!-- Card History Modal -->
+        <div id="cardHistoryModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>📜 История на Gift Card</h2>
+                    <span class="close">&times;</span>
+                </div>
+                <div id="cardHistoryContent"></div>
+                <div class="form-actions">
+                    <button class="btn btn-secondary cancel-btn">Затвори</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Create Bundle Modal -->
+        <div id="createBundleModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>📦 Създай Bundle</h2>
+                    <span class="close">&times;</span>
+                </div>
+                <form id="createBundleForm">
+                    <div class="form-group">
+                        <label for="bundleName">Име *</label>
+                        <input type="text" id="bundleName" required placeholder="Стартов Пакет">
+                    </div>
+                    <div class="form-group">
+                        <label for="bundleDescription">Описание</label>
+                        <textarea id="bundleDescription" rows="2" placeholder="Всичко необходимо за начало"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Изберете продукти (минимум 2) *</label>
+                        <div id="bundleProductsSelect" class="products-checkboxes"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="bundleDiscount">Отстъпка (%) *</label>
+                        <input type="number" id="bundleDiscount" min="1" max="99" step="0.1" required value="10">
+                    </div>
+                    <div class="form-group">
+                        <label for="bundleValidUntil">Валиден до</label>
+                        <input type="date" id="bundleValidUntil">
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Създай</button>
+                        <button type="button" class="btn btn-secondary cancel-btn">Отказ</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Bundle Performance Modal -->
+        <div id="bundlePerformanceModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>📊 Статистика Bundle</h2>
+                    <span class="close">&times;</span>
+                </div>
+                <div id="bundlePerformanceContent"></div>
+                <div class="form-actions">
+                    <button class="btn btn-secondary cancel-btn">Затвори</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Create Flash Sale Modal -->
+        <div id="createFlashSaleModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>⚡ Създай Flash Sale</h2>
+                    <span class="close">&times;</span>
+                </div>
+                <form id="createFlashSaleForm">
+                    <div class="form-group">
+                        <label for="flashSaleProduct">Продукт *</label>
+                        <select id="flashSaleProduct" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="flashSaleDiscount">Отстъпка (%) *</label>
+                        <input type="number" id="flashSaleDiscount" min="1" max="99" step="0.1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="flashSaleStart">Начало *</label>
+                        <input type="datetime-local" id="flashSaleStart" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="flashSaleDuration">Продължителност (часове) *</label>
+                        <input type="number" id="flashSaleDuration" min="1" max="168" required value="24">
+                    </div>
+                    <div class="form-group">
+                        <label for="flashSaleMaxQty">Максимално количество</label>
+                        <input type="number" id="flashSaleMaxQty" min="1" placeholder="Оставете празно за неограничено">
+                    </div>
+                    <div class="form-group">
+                        <label for="flashSaleMaxPerCustomer">Макс. на клиент</label>
+                        <input type="number" id="flashSaleMaxPerCustomer" min="1" placeholder="Оставете празно за неограничено">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="flashSaleShowCountdown" checked> Покажи countdown таймер
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="flashSaleShowStock" checked> Покажи оставащо количество
+                        </label>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Създай</button>
+                        <button type="button" class="btn btn-secondary cancel-btn">Отказ</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Create Happy Hour Modal -->
+        <div id="createHappyHourModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>🎉 Създай Happy Hour</h2>
+                    <span class="close">&times;</span>
+                </div>
+                <form id="createHappyHourForm">
+                    <div class="form-group">
+                        <label for="happyHourProduct">Продукт *</label>
+                        <select id="happyHourProduct" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="happyHourDiscount">Отстъпка (%) *</label>
+                        <input type="number" id="happyHourDiscount" min="1" max="99" step="0.1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="happyHourStart">Начален час *</label>
+                        <input type="number" id="happyHourStart" min="0" max="23" required placeholder="14">
+                    </div>
+                    <div class="form-group">
+                        <label for="happyHourEnd">Краен час *</label>
+                        <input type="number" id="happyHourEnd" min="0" max="23" required placeholder="18">
+                    </div>
+                    <div class="form-group">
+                        <label>Дни от седмицата *</label>
+                        <div class="days-selector">
+                            <label><input type="checkbox" value="0"> Нед</label>
+                            <label><input type="checkbox" value="1"> Пон</label>
+                            <label><input type="checkbox" value="2"> Вто</label>
+                            <label><input type="checkbox" value="3"> Сря</label>
+                            <label><input type="checkbox" value="4"> Чет</label>
+                            <label><input type="checkbox" value="5" checked> Пет</label>
+                            <label><input type="checkbox" value="6"> Съб</label>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Създай</button>
+                        <button type="button" class="btn btn-secondary cancel-btn">Отказ</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Campaign Details Modal -->
+        <div id="campaignDetailsModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>🎄 Детайли Кампания</h2>
+                    <span class="close">&times;</span>
+                </div>
+                <div id="campaignDetailsContent"></div>
+                <div class="form-actions">
+                    <button class="btn btn-secondary cancel-btn">Затвори</button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <!-- ES6 Modular Application -->
